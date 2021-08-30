@@ -272,10 +272,8 @@ def cronjob_execute():
     ci_paras = []
     ci_paras.append("--delete-instances")
     ci_paras.append("--email-notifications")
-    ci_paras.append("--all-platforms")
-    ci_paras.append("--docs-test")
     # ci_paras.append("--charts-only")
-    # ci_paras.append("--docker-only")
+    # ci_paras.append("--container-only")
     # ci_paras.append("--build-only")
     # ci_paras.append("--deployment-only")
 
@@ -291,7 +289,7 @@ if __name__ == '__main__':
 
     if mode == "server":
         print("###################################################  Starting CI HTTP SERVER")
-        print("###################################################  Parameters: delete-instances,email-notifications,charts-only,docker-only,build-only,deployment-only,docs-test")
+        print("###################################################  Parameters: delete-instances,os-usr,os-pwd,reg-url,reg-usr,reg-pwd,launch-name,email-notifications,charts-only,docker-only,build-only,deployment-only,disable-report")
         run(port=int(port))
     elif mode == "cronjob":
         cronjob_execute()
