@@ -10,7 +10,7 @@ Group=ubuntu
 Environment="CI_USERNAME={{ os_ci_username }}"
 Environment="CI_PASSWORD={{ os_ci_password }}"
 Environment="http_proxy={{ http_proxy }}"
-ExecStart=/usr/bin/python3 /home/ubuntu/kaapana_ci/ci_http_trigger_server.py
+ExecStart=/usr/bin/python3 /home/ubuntu/kaapana_ci/CI/scripts/ci_http_trigger_server.py
 WorkingDirectory=/home/ubuntu/kaapana_ci/CI/scripts
 
 [Install]
