@@ -331,13 +331,6 @@
         value: "{{ registry_token }}"
         env: yes
     
-    - name: Create cronjob env TERM
-      become: no
-      cron:
-        name: TERM
-        value: "xterm"
-        env: yes
-
     - name: Create cronjob at 0 docker prune
       become: no
       cron:
