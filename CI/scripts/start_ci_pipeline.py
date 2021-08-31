@@ -18,9 +18,10 @@ import datetime
 import signal
 import importlib
 
-kaapana_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-exceptions_file = os.path.join(kaapana_dir, "CI", "scripts", "ci_exceptions.json")
-ansible_playbook_dir = os.path.join(kaapana_dir, "CI", "ansible_playbooks")
+kaapana_ci_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+exceptions_file = os.path.join(kaapana_ci_dir, "CI", "scripts", "ci_exceptions.json")
+ansible_playbook_dir = os.path.join(kaapana_ci_dir, "CI", "ansible_playbooks")
+kaapana_dir = '/home/ubuntu/kaapana'
 build_charts_helper_file = os.path.join(kaapana_dir, "build-scripts", "build_helper", "charts_build_and_push_all.py")
 build_containers_helper_file = os.path.join(kaapana_dir, "build-scripts", "build_helper", "containers_build_and_push_all.py")
 

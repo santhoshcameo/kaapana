@@ -11,10 +11,10 @@ from git import Repo
 import os
 import signal
 
-global git_dir, last_trigger
+global ci_dir, git_dir, last_trigger
 
-git_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+ci_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+git_dir = '/home/ubuntu/kaapana'
 
 class S(BaseHTTPRequestHandler):
 
@@ -24,7 +24,7 @@ class S(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        global git_dir
+        global git_dir, ci_dir
         self._set_response()
         urllib_path = urllib.parse.urlparse(self.path)
         parameters = urllib.parse.parse_qs(
@@ -41,7 +41,7 @@ class S(BaseHTTPRequestHandler):
         print("IN GET {}".format(urllib_path.path))
         path_parts = urllib_path.path.split("/")
         if path_parts[1] == "cikaapana":
-            lock_file = os.path.join(os.path.dirname(git_dir), "ci_running.txt")
+            lock_file = os.path.join(os.path.dirname(ci_dir), "ci_running.txt")
 
             if path_parts[2] == "terminate" and os.path.isfile(lock_file):
                 with open(lock_file) as f:
@@ -169,8 +169,10 @@ class S(BaseHTTPRequestHandler):
                     ci_paras.append("--branch")
                     ci_paras.append("{}".format(branch))
                     ci_paras.append("--disable-safe-mode")
-                    start_ci_pipeline_file = os.path.join(git_dir, "CI", "scripts", "start_ci_pipeline.py")
-                    p = subprocess.Popen(["/usr/bin/python3", start_ci_pipeline_file, *ci_paras])
+                    start_ci_pipeline_file = os.path.join(ci_dir, "CI", "scripts", "start_ci_pipeline.py")
+                    my_env = os.environ.copy()
+                    my_env["PATH"] = "/home/ubuntu/.local/bin:/usr/bin:/bin:/snap/bin:/usr/local/bin:" + my_env["PATH"]
+                    p = subprocess.Popen(["/usr/bin/python3", start_ci_pipeline_file, *ci_paras], env=my_env)
 
                 else:
                     self.wfile.write("""
@@ -289,7 +291,7 @@ if __name__ == '__main__':
 
     if mode == "server":
         print("###################################################  Starting CI HTTP SERVER")
-        print("###################################################  Parameters: delete-instances,os-usr,os-pwd,reg-url,reg-usr,reg-pwd,launch-name,email-notifications,charts-only,docker-only,build-only,deployment-only,disable-report")
+        print("###################################################  Parameters: delete-instances,os-usr,os-pwd,reg-url,reg-usr,reg-pwd,launch-name,email-notifications,charts-only,container-only,build-only,deploy-only,disable-report")
         run(port=int(port))
     elif mode == "cronjob":
         cronjob_execute()
