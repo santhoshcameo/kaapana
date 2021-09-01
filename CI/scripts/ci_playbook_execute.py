@@ -152,10 +152,22 @@ class ResultCallback(CallbackBase):
         task = result._task.get_name()
         ignore_error = result._task_fields['ignore_errors'] if 'ignore_errors' in result._task_fields else False
         changed = result._result['changed'] if 'changed' in result._task_fields else None
-        ## TODO: sometimes, std_out and std_err info is available inside result._result['stdout'] and 
-        # result._result['module_stderr'] respectively. Following could be updated to represent it 
-        std_out = result._result['module_stdout'].split("\n") if 'module_stdout' in result._result else "N/A"
-        std_err = result._result['module_stderr'].split("\n") if 'module_stderr' in result._result else "N/A"
+        ## sometimes, std_out and std_err info is available inside result._result['stdout'] and 
+        ## result._result['stderr'] respectively. Following lines were changed to represent it 
+        # std_out = result._result['module_stdout'].split("\n") if 'module_stdout' in result._result else "N/A"
+        # std_err = result._result['module_stderr'].split("\n") if 'module_stderr' in result._result else "N/A"
+        if 'module_stdout' in result._result:
+            std_out = result._result['module_stdout'].split("\n")
+        elif 'stdout' in result._result:
+            std_out = result._result['stdout'].split("\n")
+        else
+            std_out = "N/A"
+        if 'module_stderr' in result._result:
+            std_out = result._result['module_stderr'].split("\n")
+        elif 'stderr' in result._result:
+            std_out = result._result['stderr'].split("\n")
+        else
+            std_out = "N/A"
         exception = result._result['exception'].split("\n") if 'exception' in result._result else "N/A"
         error_msg = result._result['msg'].split("\n") if 'msg' in result._result else "N/A"
         return_code = result._result['rc'] if 'rc' in result._result else None
