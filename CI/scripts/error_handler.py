@@ -20,7 +20,7 @@ def send_email(mail_address, message, logs_dict={}):
     from_address = "CI@kaapana.dkfz"
     sending_ts = datetime.now()
 
-    sub = 'kaapana CI report'
+    sub = 'Kaapana CI report'
 
     msg = MIMEMultipart('alternative')
     msg['From'] = from_address
@@ -46,7 +46,8 @@ def notify_maintainers(logs_dict):
         maintainers = logs_dict["container"].maintainers
         del logs_dict["container"]
     else:
-        maintainers = blame_last_edit(logs_dict)
+        # maintainers = blame_last_edit(logs_dict)
+        return
 
     if maintainers is None:
         print("++++++++++++++++++++++ COULD NOT EXTRACT MAINTAINER!")
@@ -68,11 +69,11 @@ def notify_maintainers(logs_dict):
                 <body>
                     Hi <b>{}</b>,<br><br>
 
-                    we found some issues within: <b> {} </b>.<br>
+                    We found some issues within a container: <b> {} </b>.<br>
                     Since you are the last editor, please have a look at it.<br>
                     Thanks!<br><br>
                     sincerely yours,<br>
-                    JIPCI <br>
+                    Kaapana-CI <br>
                 </body>
             </html>
             """.format(maintainer_name, error_filepath)
@@ -95,6 +96,53 @@ def blame_last_edit(logs_dict):
     firstname, lastname, email_address = git_log.split(" ")
     print("Git Last editor: {} {}".format(firstname, lastname))
     print("Git mail address: {}".format(email_address))
+
+    return {"{} {}".format(firstname, lastname): email_address}
+
+
+def ci_failure_notification(message=""):
+    print("CI failure notification to last Git commit author: ")
+    maintainers = last_commit_author()
+
+    if maintainers is None:
+        print("++++++++++++++++++++++ COULD NOT EXTRACT AUTHOR OF LAST GIT COMMIT!")
+        return
+    else:
+        print("FILE MAINTAINERS: ")
+        print(json.dumps(maintainers, indent=4, sort_keys=True))
+
+    for maintainer in maintainers.keys():
+        print("Maintainer: {} -> {}".format(maintainer, maintainers[maintainer]))
+        maintainer_name = maintainer
+        maintainer_email = maintainers[maintainer]
+
+        message = """
+            <html>
+                <head></head>
+                <body>
+                    Hi <b>{}</b>,<br><br>
+
+                    Kaapana CI has failed. <b> {} </b>.<br>
+                    Since you are the author of the last commit, please have a look at it.<br>
+                    Thanks!<br><br>
+                    sincerely yours,<br>
+                    Kaapana-CI <br>
+                </body>
+            </html>
+            """.format(maintainer_name, message)
+
+        send_email(mail_address=maintainer_email, message=message, logs_dict=logs_dict)
+
+
+def last_commit_author():
+    git_log = g.log("-1", "--pretty=format:%an %ae%n")
+    if len(git_log.split(" ")) != 3:
+        print("############################################# Could not extract author details of last Git commit: {}".format(git_log))
+        return None
+
+    firstname, lastname, email_address = git_log.split(" ")
+    print("Author of last Git commit: {} {}".format(firstname, lastname))
+    print("Email of author of last Git commit: {}".format(email_address))
 
     return {"{} {}".format(firstname, lastname): email_address}
 

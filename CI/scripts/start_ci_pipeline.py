@@ -51,7 +51,7 @@ suites = {}
 rp_service = None
 lock_file = None
 suite_done = None
-mail_max = 10
+mail_max = 1
 mail_counter = 0
 
 username = None
@@ -105,6 +105,9 @@ def terminate_session(result_code, ci_status="PASSED"):
         return
     global lock_file, rp_service, suites
 
+    if ci_status == "FAILED" and email_notification:
+        error_handler.ci_failure_notification(message="Failure in Deployment tests!")
+    
     for suite_name, suite_dict in suites.items():
         if suite_dict["running"] and suite_name != "launch":
             print("stopping suite: {}".format(suite_name))
@@ -144,7 +147,7 @@ def terminate_session(result_code, ci_status="PASSED"):
 def handle_logs(log_dict):
     if disable_report:
         return
-    global rp_service,  mail_notification, mail_counter, mail_max, ci_exceptions, suites
+    global rp_service,  email_notification, mail_counter, mail_max, ci_exceptions, suites
     suite = log_dict["suite"] if log_dict["suite"] is not None else "launch"
     reason = log_dict["message"] if "message" in log_dict else ""
     log = log_dict["log"] if "log" in log_dict else ""
@@ -208,7 +211,7 @@ def handle_logs(log_dict):
     if test_dict is not None:
         item_id = test_dict["id"]
 
-    if loglevel is not None and loglevel == "error" and mail_notification and mail_counter < mail_max and rel_file is not None and rel_file != "":
+    if loglevel is not None and loglevel == "error" and email_notification and mail_counter <= mail_max and rel_file is not None and rel_file != "":
         print("################################################ -> SENDING EMAIL No {}".format(mail_counter))
         error_handler.notify_maintainers(logs_dict=log_dict)
         mail_counter += mail_counter
@@ -677,7 +680,6 @@ def launch():
 
             if not container_only:
                 check_charts()
-                pass
 
             if not charts_only:
                 check_containers()
@@ -755,8 +757,11 @@ def launch():
             print("BUILD ONLY -> Skipping deployment tests....")
             print("DONE")
     except Exception as e:
-        print("Error in main routine!")
+        error_message = "Error in main routine of CI!"
+        print(error_message)
         print(traceback.format_exc())
+        error_handler.ci_failure_notification(message=error_message)
+
     finally:
         print("Terminating...")
         # delete_ci_instances()
@@ -805,7 +810,7 @@ if __name__ == '__main__':
     parser.add_argument("-rurl", "--registry-url", dest="registry_url", default=None, help="Registry Link")
     parser.add_argument("-px", "--http-proxy", dest="http_proxy", default=None, help="HTTP Proxy")
     parser.add_argument("-di", "--delete-instances", dest="delete_instances", default=False, action='store_true', help="Should a new OS CI instance be created for the tests?")
-    parser.add_argument("-en", "--email-notifications", dest="mail_notify", default=False, action='store_true', help="Enable e-mail notifications for errors")
+    parser.add_argument("-en", "--email-notifications", dest="email_notify", default=False, action='store_true', help="Enable e-mail notifications for errors")
     parser.add_argument("-bo", "--build-only", dest="build_only", default=False, action='store_true', help="No platform deployment and UI tests")
     parser.add_argument("-cho", "--charts-only", dest="charts_only", default=False, action='store_true', help="Just build all helm charts")
     parser.add_argument("-co", "--container-only", dest="container_only", default=False, action='store_true', help="Just build all containers charts")
@@ -825,7 +830,7 @@ if __name__ == '__main__':
     http_proxy = args.http_proxy if args.http_proxy is not None else http_proxy
     launch_name = args.launch_name
     instance_name = args.instance_name
-    mail_notification = args.mail_notify
+    email_notification = args.email_notify
     build_only = args.build_only
     charts_only = args.charts_only
     container_only = args.container_only
