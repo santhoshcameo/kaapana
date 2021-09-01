@@ -670,7 +670,7 @@ def launch():
             
             if log_level not in supported_log_levels:
                 print("Log level {} not supported.")
-                print("Please use 'DEBUG','WARN' or 'ERROR' for log_level in build-configuration.json")
+                print("Please use 'DEBUG','WARN' or 'ERROR' for log_level")
                 exit(1)
 
             log_level = supported_log_levels.index(log_level)
