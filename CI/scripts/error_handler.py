@@ -7,7 +7,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
-kaapana_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+# kaapana_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+kaapana_dir = '/home/ubuntu/kaapana'
 g = git.Git(kaapana_dir)
 
 
