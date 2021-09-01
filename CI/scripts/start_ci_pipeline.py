@@ -812,7 +812,6 @@ if __name__ == '__main__':
     parser.add_argument("-dr", "--disable-report", dest="disable_report", default=False, action='store_true', help="Disable report to ReportPortal")
     parser.add_argument("-depo", "--deployment-only", dest="dpl_only", default=False, action='store_true', help="Only deployment tests")
     parser.add_argument("-allp", "--all-platforms", dest="all_platforms", default=False, action='store_true', help="Test all platforms")
-    parser.add_argument("-dt", "--docs-test", dest="docs_test", default=False, action='store_true', help="Test of the online documentation scripts?")
 
     args = parser.parse_args()
     branch = args.branch 
@@ -827,7 +826,6 @@ if __name__ == '__main__':
     launch_name = args.launch_name
     instance_name = args.instance_name
     mail_notification = args.mail_notify
-    docs_test = args.docs_test
     build_only = args.build_only
     charts_only = args.charts_only
     container_only = args.container_only
