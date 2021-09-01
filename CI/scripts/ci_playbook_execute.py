@@ -160,13 +160,13 @@ class ResultCallback(CallbackBase):
             std_out = result._result['module_stdout'].split("\n")
         elif 'stdout' in result._result:
             std_out = result._result['stdout'].split("\n")
-        else
+        else:
             std_out = "N/A"
         if 'module_stderr' in result._result:
             std_out = result._result['module_stderr'].split("\n")
         elif 'stderr' in result._result:
             std_out = result._result['stderr'].split("\n")
-        else
+        else:
             std_out = "N/A"
         exception = result._result['exception'].split("\n") if 'exception' in result._result else "N/A"
         error_msg = result._result['msg'].split("\n") if 'msg' in result._result else "N/A"

@@ -208,7 +208,7 @@ def handle_logs(log_dict):
     if test_dict is not None:
         item_id = test_dict["id"]
 
-    if loglevel is not None and loglevel == "error" and mail_notification and mail_counter < mail_max and rel_file != "" and rel_file is not None:
+    if loglevel is not None and loglevel == "error" and mail_notification and mail_counter < mail_max and rel_file is not None and rel_file != "":
         print("################################################ -> SENDING EMAIL No {}".format(mail_counter))
         error_handler.notify_maintainers(logs_dict=log_dict)
         mail_counter += mail_counter
