@@ -51,7 +51,7 @@ suites = {}
 rp_service = None
 lock_file = None
 suite_done = None
-mail_max = 1
+mail_max = 5
 mail_counter = 0
 
 username = None
@@ -105,7 +105,7 @@ def terminate_session(result_code, ci_status="PASSED"):
         return
     global lock_file, rp_service, suites
 
-    if ci_status == "FAILED" and email_notification:
+    if ci_status == "FAILED" and email_notifications:
         error_handler.ci_failure_notification(message="Failure in Deployment tests!")
     
     for suite_name, suite_dict in suites.items():
@@ -147,7 +147,7 @@ def terminate_session(result_code, ci_status="PASSED"):
 def handle_logs(log_dict):
     if disable_report:
         return
-    global rp_service,  email_notification, mail_counter, mail_max, ci_exceptions, suites
+    global rp_service,  email_notifications, mail_counter, mail_max, ci_exceptions, suites
     suite = log_dict["suite"] if log_dict["suite"] is not None else "launch"
     reason = log_dict["message"] if "message" in log_dict else ""
     log = log_dict["log"] if "log" in log_dict else ""
@@ -211,7 +211,7 @@ def handle_logs(log_dict):
     if test_dict is not None:
         item_id = test_dict["id"]
 
-    if loglevel is not None and loglevel == "error" and email_notification and mail_counter <= mail_max and rel_file is not None and rel_file != "":
+    if loglevel is not None and loglevel == "error" and email_notifications and mail_counter <= mail_max and rel_file is not None and rel_file != "":
         print("################################################ -> SENDING EMAIL No {}".format(mail_counter))
         error_handler.notify_maintainers(logs_dict=log_dict)
         mail_counter += mail_counter
@@ -830,7 +830,7 @@ if __name__ == '__main__':
     http_proxy = args.http_proxy if args.http_proxy is not None else http_proxy
     launch_name = args.launch_name
     instance_name = args.instance_name
-    email_notification = args.email_notify
+    email_notifications = args.email_notify
     build_only = args.build_only
     charts_only = args.charts_only
     container_only = args.container_only
