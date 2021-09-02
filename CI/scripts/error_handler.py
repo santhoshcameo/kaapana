@@ -41,13 +41,8 @@ def send_email(mail_address, message, logs_dict={}):
 
 
 def notify_maintainers(logs_dict):
-    print("notify_maintainers: ")
-    if "container" in logs_dict:
-        maintainers = logs_dict["container"].maintainers
-        del logs_dict["container"]
-    else:
-        # maintainers = blame_last_edit(logs_dict)
-        return
+    print("notify_maintainers: ")    
+    maintainers = blame_last_edit(logs_dict)
 
     if maintainers is None:
         print("++++++++++++++++++++++ COULD NOT EXTRACT MAINTAINER!")
@@ -69,10 +64,10 @@ def notify_maintainers(logs_dict):
                 <body>
                     Hi <b>{}</b>,<br><br>
 
-                    We found some issues within a container: <b> {} </b>.<br>
+                    We found some issues within: <b> {} </b>.<br>
                     Since you are the last editor, please have a look at it.<br>
                     Thanks!<br><br>
-                    sincerely yours,<br>
+                    Yours sincerely,<br>
                     Kaapana-CI <br>
                 </body>
             </html>
@@ -101,37 +96,24 @@ def blame_last_edit(logs_dict):
 
 
 def ci_failure_notification(message=""):
-    print("CI failure notification to last Git commit author: ")
-    maintainers = last_commit_author()
+    print("CI failure notification to Kaapana team members: ")
+    maintainer_email = "kaapana-team@dkfz-heidelberg.de"
+    message = """
+        <html>
+            <head></head>
+            <body>
+                Hi,<br><br>
 
-    if maintainers is None:
-        print("++++++++++++++++++++++ COULD NOT EXTRACT AUTHOR OF LAST GIT COMMIT!")
-        return
-    else:
-        print("FILE MAINTAINERS: ")
-        print(json.dumps(maintainers, indent=4, sort_keys=True))
+                This is to inform you that the Kaapana CI has failed. <b> {} </b>.<br>
+                You are receiving this email since you are a part of the Kaapana team.<br>
+                Thanks!<br><br>
+                Yours sincerely,<br>
+                Kaapana-CI <br>
+            </body>
+        </html>
+        """.format(message)
 
-    for maintainer in maintainers.keys():
-        print("Maintainer: {} -> {}".format(maintainer, maintainers[maintainer]))
-        maintainer_name = maintainer
-        maintainer_email = maintainers[maintainer]
-
-        message = """
-            <html>
-                <head></head>
-                <body>
-                    Hi <b>{}</b>,<br><br>
-
-                    Kaapana CI has failed. <b> {} </b>.<br>
-                    Since you are the author of the last commit, please have a look at it.<br>
-                    Thanks!<br><br>
-                    sincerely yours,<br>
-                    Kaapana-CI <br>
-                </body>
-            </html>
-            """.format(maintainer_name, message)
-
-        send_email(mail_address=maintainer_email, message=message, logs_dict=logs_dict)
+    send_email(mail_address=maintainer_email, message=message)
 
 
 def last_commit_author():
