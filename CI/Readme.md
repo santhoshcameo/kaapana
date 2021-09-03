@@ -11,11 +11,11 @@
 To start a new instance of the CI server:
 `ansible-playbook kaapana/CI/ansible_playbooks/setup_ci_server_playbook.yaml`
 
-- Will start a new OpenStack instance with all CI configuration
+- This will start a new OpenStack instance with all CI configuration
 - ReportPortal available at http://instance-ip/ui -> default username/pw: default:1q2w3e and superadmin:erebus
 - You need to configure a "kaapana" project in report portal + new user
 - Adapt the access-token in `kaapana/CI/scripts/start_ci_pipeline.py` to the new user
-- Cronjob will trigger the pipeline each night at 1 am
+- Cronjob will trigger the pipeline each night at 12 am
 - Http CI trigger running @ http://instance-ip:8080/cikaapana/<branch> 
   - eg: /cikaapana/feature/test or /cikaapana/develop
 
@@ -28,7 +28,7 @@ To start a new instance of the CI server:
 ### Start main pipeline @ 2am
 
 - [x] Checkout kaapana develop branch & pull
-- [x] Start CI/scripts/start_ci_pipeline.py
+- [x] Trigger CI service via HTTP which then starts CI/scripts/start_ci_pipeline.py
 
 ### Quick checks
 
@@ -54,33 +54,18 @@ To start a new instance of the CI server:
 - [x] Build each container
 - [x] Push each container
 
-## JIP documentation test
+## Start fresh CentOS (v. 7 & 8) & Ubuntu instances
 
-- [x] Start new OpenStack instance
-- [x] Download server_installation.sh from documentation website
-- [x] Install all dependencies with the script
-- [x] Download jip_installer.sh from documentation website
-- [x] Deploy last release with the script
-- [x] Basic deployment and UI tests
-- [x] Delete Openstack Instance  
+- [x] Delete OpenStack instances if found
+- [x] Start new CentOS (7 & 8) and Ubuntu OpenStack instances
 
-## Start new Centos OpenStack instance
+## Deploy Kaapana platform on (CentOS & Ubuntu) Openstack instances
 
-- [x] Start new OpenStack CentOS instance if not found
-- [x] Use server_installation.sh script from develop branch
-- [x] Install all dependencies (Docker,Kubernetes etc.)
-- [x] Basic tests if everything is running
-
-## Deploy the platform
-
-- [x] Delete all existing deployments
-- [x] Deploy one of the platforms (specified in `project_configs`)
-- [x] Currently: jip_release, jip_dev and kaapana_platform one after another
-  - [x] Deploy platform
-  - [x] Check all containers are running
-  - [x] Basic UI tetsing (Login, pacs, flow, etc. available)
-  - [x] Delete Helm deployment
-  - [x] Purge filesystem
+- [x] Install all platform dependencies using latest server install script
+- [x] Deploy platform using latest platform install script
+- [x] Check if all pods are running
+- [x] Basic UI testing (Login, PACS, Flow, etc. available)
+- [ ] Delete Openstack Instance
   
 ## More testing
 
