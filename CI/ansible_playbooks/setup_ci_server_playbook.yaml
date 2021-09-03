@@ -7,8 +7,12 @@
     OS_ENDPOINT_TYPE: publicURL
     OS_TENANT_ID: 2df9e30325c849dbadcc07d7ffd4b0d6
   vars_prompt:
+    - name: os_ci_username
+      prompt: "What is the openstack ci username?"
+      private: no
+    
     - name: os_ci_password
-      prompt: "What is the openstack kaapana-ci password?"
+      prompt: "What is the openstack ci password?"
       private: yes
 
   vars:
@@ -18,6 +22,11 @@
     - volume_size: 200
     - key_name: kaapana
   tasks:
+  - name: Get username from env...
+    set_fact:
+      os_ci_username: "{{ lookup('env','CI_USERNAME') or os_ci_username }}"
+    when: os_ci_username | length == 0
+  
   - name: Get password from env...
     set_fact:
       os_ci_password: "{{ lookup('env','CI_PASSWORD') or os_ci_password }}"
@@ -28,7 +37,7 @@
       state: present
       auth:
         auth_url: "https://cloud.dkfz-heidelberg.de:13000"
-        username: "kaapana-ci"
+        username: "{{ os_ci_username }}"
         password: "{{ os_ci_password }}"
         user_domain_name: "AD"
         project_name: "E230-Kaapana-CI"
@@ -98,15 +107,20 @@
       private: yes
 
   tasks:
-    - name: Check if Registry URL provided or not
-      fail:
-        msg: Registry URL was not entered, exiting now!!
-      when: registry_url == "" or registry_url == None
-
+    - name: Get username from env...
+      set_fact:
+        os_ci_username: "{{ lookup('env','CI_USERNAME') or os_ci_username }}"
+      when: os_ci_username | length == 0
+    
     - name: Get password from env...
       set_fact:
         os_ci_password: "{{ lookup('env','CI_PASSWORD') or os_ci_password }}"
       when: os_ci_password | length == 0
+    
+    - name: Check if Registry URL provided or not
+      fail:
+        msg: Registry URL was not entered, exiting now!!
+      when: registry_url == "" or registry_url == None
     
     - name: Get regsitry token/user name from env...
       set_fact:
