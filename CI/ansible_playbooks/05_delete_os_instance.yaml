@@ -23,25 +23,48 @@
     #     password: "{{ lookup('env','CI_PASSWORD') or password }}"
     #   when: username == "jip-ci-kaapana" and password | length == 0
     
-    - name: delete an instance
+    - name: check if instance exists
       environment: 
         OS_TENANT_ID: "{{ os_project_id }}"
-      os_server:
-        state: absent
+      openstack.cloud.server_info:
         auth:
           auth_url: "https://cloud.dkfz-heidelberg.de:13000"
           username: "{{ os_username }}"
           password: "{{ os_password }}"
           user_domain_name: "AD"
           project_name: "{{ os_project_name }}"
-        name: "{{ os_instance_name }}"
-        timeout: 120
-      register: del_instance
+        server: "{{ os_instance_name }}"
+        api_timeout: 120
+      register: inst_info
 
-    - name: RESULT
-      debug:
-        msg: "INSTANCE DELETED SUCCESSFULLY"
-    
-    - name: RETURN
-      debug:
-        msg: "OK"
+    - name: delete an instance if found
+      block:
+      - name: delete an instance  
+        environment: 
+          OS_TENANT_ID: "{{ os_project_id }}"
+        os_server:
+          state: absent
+          auth:
+            auth_url: "https://cloud.dkfz-heidelberg.de:13000"
+            username: "{{ os_username }}"
+            password: "{{ os_password }}"
+            user_domain_name: "AD"
+            project_name: "{{ os_project_name }}"
+          name: "{{ os_instance_name }}"
+          timeout: 120
+        register: del_instance
+
+      - name: RESULT
+        debug:
+          msg: "INSTANCE DELETED SUCCESSFULLY"
+      
+      - name: RETURN
+        debug:
+          msg: "OK"
+
+      when: inst_info.openstack_servers | length > 0
+
+    - name: if instance not found
+      debug: 
+        msg: "Instance not found!"
+      when: inst_info.openstack_servers | length == 0
