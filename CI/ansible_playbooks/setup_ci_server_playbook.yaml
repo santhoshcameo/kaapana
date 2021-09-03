@@ -75,11 +75,14 @@
   vars:
     ansible_ssh_private_key_file: "~/.ssh/jip-ci-kaapana.pem"
     http_proxy: http://www-int2.inet.dkfz-heidelberg.de:80
-    os_ci_username: "kaapana-ci"
     
   vars_prompt:
+    - name: os_ci_username
+      prompt: "OpenStack CI Username?"
+      private: no
+    
     - name: os_ci_password
-      prompt: "CI password?"
+      prompt: "OpenStack CI password?"
       private: yes
     
     - name: registry_url
@@ -238,8 +241,7 @@
         repo: ssh://git@phabricator.mitk.org:2222/source/kaapana.git
         key_file: "{{ ansible_env.HOME }}/.ssh/jip-ci-kaapana.pem"
         dest: "{{ ansible_env.HOME }}/kaapana"
-        ## TODO: change name of the branch to develop when CI code is merged into develop
-        version: feature/T28502-kaapana-ci
+        version: develop
         accept_hostkey: yes
         force: yes
         update: yes
@@ -353,8 +355,16 @@
         name: "ci reports"
         minute: "0"
         hour: "2"
-        job: "python3 /home/ubuntu/kaapana/CI/scripts/start_ci_pipeline.py --launch-name 'CI Nightly' -rurl {{ registry_url }} -dsm --email-notifications --delete-instances 2>&1 | tee {{ ansible_env.HOME }}/cronjob.log && echo DONE 2>&1 | tee -a {{ ansible_env.HOME }}/cronjob.log"
+        job: curl -o /home/ubuntu/cronjob.log "http://10.128.130.252:8080/cikaapana/develop?email-notifications&launch-name=Kaapana+CI+Nightly&delete-instances&os-usr={{ os_ci_username }}&os-pwd={{ os_ci_password }}&reg-url={{ registry_url }}&reg-usr={{ registry_user }}&reg-pwd={{ registry_token }}"
 
+    - name: Create Cronjob at 5 am to save latest CI service logs
+      become: no
+      cron:
+        name: "Save latest CI server service logs"
+        minute: "0"
+        hour: "5"
+        job: "journalctl -u ci-server.service -S $(date +%F) 2>&1 | tee -a /home/ubuntu/ci_systemlog_today.log"
+    
     - name: install docker
       import_tasks: task_templates/snap_install_docker.yaml
 
