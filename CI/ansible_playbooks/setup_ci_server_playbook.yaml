@@ -82,7 +82,7 @@
       private: no
     
     - name: os_ci_password
-      prompt: "OpenStack CI password?"
+      prompt: "OpenStack CI Password?"
       private: yes
     
     - name: registry_url
