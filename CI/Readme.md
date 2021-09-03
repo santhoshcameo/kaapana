@@ -59,7 +59,7 @@ To start a new instance of the CI server:
 - [x] Delete existing OpenStack instances if found
 - [x] Start new CentOS (7 & 8) and Ubuntu OpenStack instances
 
-## Deploy Kaapana platform on (CentOS & Ubuntu) Openstack instances
+## Kaapana platform deployment and tests
 
 - [x] Install all platform dependencies using latest server install script
 - [x] Deploy platform using latest platform install script
