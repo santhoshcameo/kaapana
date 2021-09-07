@@ -21,21 +21,24 @@ def send_email(mail_address, message, logs_dict={}):
     sending_ts = datetime.now()
 
     sub = 'Kaapana CI report'
+    
+    msgRoot = MIMEMultipart('related')
+    msgRoot['From'] = from_address
+    msgRoot['To'] = mail_address
+    msgRoot['Subject'] = sub
 
-    msg = MIMEMultipart('alternative')
-    msg['From'] = from_address
-    msg['To'] = mail_address
-    msg['Subject'] = sub
-
-    body = message
-    msg.attach(MIMEText(body, 'html'))
+    msgAlt = MIMEMultipart('alternative')
+    msgRoot.attach(msgAlt)
+    
+    msgTxt = MIMEText(message, 'html')
+    msgAlt.attach(msgTxt)
 
     attachment = MIMEText(json.dumps(logs_dict, indent=4, sort_keys=True))
     attachment.add_header('Content-Disposition', 'attachment', filename="logs.txt")
-    msg.attach(attachment)
+    msgRoot.attach(attachment)
 
     s = smtplib.SMTP(host='mailhost2.dkfz-heidelberg.de', port=25)
-    s.send_message(msg)
+    s.sendmail(from_address, mail_address, msgRoot.as_string())
     s.quit()
     return 0
 
