@@ -668,9 +668,7 @@ def launch():
         exit(1)
 
     try:
-        running_processes = []
         if not dpl_only:
-            
             if log_level not in supported_log_levels:
                 print("Log level {} not supported.")
                 print("Please use 'DEBUG','WARN' or 'ERROR' for log_level")
@@ -760,7 +758,8 @@ def launch():
         error_message = "Error in main routine of CI!"
         print(error_message)
         print(traceback.format_exc())
-        error_handler.ci_failure_notification(message=error_message)
+        if email_notifications:
+            error_handler.ci_failure_notification(message=error_message)
 
     finally:
         print("Terminating...")
