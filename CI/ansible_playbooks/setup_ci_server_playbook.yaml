@@ -377,7 +377,7 @@
         name: "Save latest CI server service logs"
         minute: "0"
         hour: "5"
-        job: "journalctl -u ci-server.service -S $(date +%F) 2>&1 | tee -a /home/ubuntu/ci_systemlog_today.log"
+        job: "journalctl -u ci-server.service -S `date +%F` 2>&1 | tee /home/ubuntu/ci_systemlog_today.log"
     
     - name: install docker
       import_tasks: task_templates/snap_install_docker.yaml
