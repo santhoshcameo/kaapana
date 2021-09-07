@@ -87,14 +87,14 @@ class S(BaseHTTPRequestHandler):
                     ci_paras.append(f"{parameters['os-usr'][0]}")
                     del parameters["os-usr"]
                 else:
-                    self.wfile.write("CI pipeline can't work without openstack user <br />".encode('utf-8'))
+                    self.wfile.write("CI pipeline can't be triggered without openstack user <br />".encode('utf-8'))
                 
                 if "os-pwd" in parameters:
                     ci_paras.append("--password")
                     ci_paras.append(f"{parameters['os-pwd'][0]}")
                     del parameters["os-pwd"]
                 else:
-                    self.wfile.write("CI deployment can't work without openstack password <br />".encode('utf-8'))
+                    self.wfile.write("CI pipeline can't be triggered without openstack password <br />".encode('utf-8'))
 
                 if "reg-url" in parameters:
                     ci_paras.append("--registry-url")
@@ -205,26 +205,24 @@ class S(BaseHTTPRequestHandler):
                                             <div>
                                             <h1><strong>Branch {} not found!</strong></h1>
                                             <br />
-                                            <h1><strong>CI Parameters passed are {}</strong></h1>
-                                            <br />
                                             <h2>Usage:</h2>
                                             <h2>/cikaapana/&lt;branch&gt;?para1&amp;para2</h2>
                                             <br />
                                             <div><strong>where para could be:</strong></div>
                                             <br />
-                                            <div>&nbsp; &nbsp; delete-instances&nbsp; &nbsp; &nbsp; &nbsp;-&gt; start from scratch and delete OS ci instances first</div>
-                                            <div>&nbsp; &nbsp; os-usr&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-&gt; OpenStack CI user "os-usr=&ltos-ci-user&gt"</div>
-                                            <div>&nbsp; &nbsp; os-pwd&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-&gt; OpenStack CI password "os-pwd=&ltos-ci-password/token&gt"</div>
-                                            <div>&nbsp; &nbsp; reg-url&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-&gt; container registry url "reg-url=&lturl_link&gt"</div>
-                                            <div>&nbsp; &nbsp; reg-usr&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-&gt; container registry user "reg-usr=&ltreg_user&gt"</div>
-                                            <div>&nbsp; &nbsp; reg-pwd&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-&gt; enter container registry token/password "reg-pwd=&ltreg-password/token&gt"</div>
-                                            <div>&nbsp; &nbsp; launch-name&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; CI job launch name, appears on CI dashboard</div>
-                                            <div>&nbsp; &nbsp; build-only&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; check, build and push Helm charts Docker containers only</div>
-                                            <div>&nbsp; &nbsp; charts-only&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; check, build and push Helm charts only</div>
-                                            <div>&nbsp; &nbsp; docker-only&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-&gt; check, build and push Docker containers only</div>
-                                            <div>&nbsp; &nbsp; deploy-only&nbsp; &nbsp; &nbsp;-&gt; platform deployment tests only</div>
-                                            <div>&nbsp; &nbsp; disable-report&nbsp; &nbsp;-&gt; disable reporting on CI dashboard</div>
-                                            <div>&nbsp; &nbsp; email-notifications&nbsp; &nbsp;-&gt; enable email-notifications for errors</div>
+                                            <div>&nbsp; &nbsp; delete-instances&nbsp; &nbsp; &nbsp; &nbsp; -&gt; start from scratch and delete OS ci instances first</div>
+                                            <div>&nbsp; &nbsp; os-usr&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; OpenStack CI user "os-usr=&ltos-ci-user&gt"</div>
+                                            <div>&nbsp; &nbsp; os-pwd&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; OpenStack CI password "os-pwd=&ltos-ci-password/token&gt"</div>
+                                            <div>&nbsp; &nbsp; reg-url&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; container registry url "reg-url=&lturl_link&gt"</div>
+                                            <div>&nbsp; &nbsp; reg-usr&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; container registry user "reg-usr=&ltreg_user&gt"</div>
+                                            <div>&nbsp; &nbsp; reg-pwd&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; enter container registry token/password "reg-pwd=&ltreg-password/token&gt"</div>
+                                            <div>&nbsp; &nbsp; launch-name&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; CI job launch name, appears on CI dashboard</div>
+                                            <div>&nbsp; &nbsp; build-only&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; check, build and push Helm charts Docker containers only</div>
+                                            <div>&nbsp; &nbsp; charts-only&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; check, build and push Helm charts only</div>
+                                            <div>&nbsp; &nbsp; docker-only&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; check, build and push Docker containers only</div>
+                                            <div>&nbsp; &nbsp; deploy-only&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; platform deployment tests only</div>
+                                            <div>&nbsp; &nbsp; disable-report&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; disable reporting on CI dashboard</div>
+                                            <div>&nbsp; &nbsp; email-notifications&nbsp; &nbsp; -&gt; enable email-notifications for errors</div>
                                             <br />
                                             <div><strong>example:</strong></div>
                                             <div><em>/cikaapana/develop?delete-instances&amp;build-only&amp;email-notifications</em></div>
@@ -240,7 +238,7 @@ class S(BaseHTTPRequestHandler):
                     </body>
                     </html>
 
-                    """.format(branch, ci_paras).encode('utf-8'))
+                    """.format(branch).encode('utf-8'))
 
         else:
             self.wfile.write("Nothing to do...".encode('utf-8'))
