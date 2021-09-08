@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from collections.abc import Mapping
 
 
 # kaapana_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
@@ -32,8 +33,11 @@ def send_email(mail_address, message, logs_dict={}):
     
     msgTxt = MIMEText(message, 'html')
     msgAlt.attach(msgTxt)
-
-    attachment = MIMEText(json.dumps(logs_dict, indent=4, sort_keys=True))
+    
+    if isinstance(logs_dict, Mapping):
+        attachment = MIMEText(json.dumps(logs_dict, indent=4, sort_keys=True))
+    else:
+        attachment = MIMEText(logs_dict, 'plain')
     attachment.add_header('Content-Disposition', 'attachment', filename="logs.txt")
     msgRoot.attach(attachment)
 
@@ -98,7 +102,7 @@ def blame_last_edit(logs_dict):
     return {"{} {}".format(firstname, lastname): email_address}
 
 
-def ci_failure_notification(message=""):
+def ci_failure_notification(message="", logs_dict={}):
     print("CI failure notification to Kaapana team members: ")
     maintainer_email = "kaapana-team@dkfz-heidelberg.de"
     message = """
@@ -116,7 +120,7 @@ def ci_failure_notification(message=""):
         </html>
         """.format(message)
 
-    send_email(mail_address=maintainer_email, message=message)
+    send_email(mail_address=maintainer_email, message=message, logs_dict=logs_dict)
 
 
 def last_commit_author():

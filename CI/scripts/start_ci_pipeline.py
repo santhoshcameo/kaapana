@@ -106,7 +106,7 @@ def terminate_session(result_code, ci_status="PASSED"):
     global lock_file, rp_service, suites
 
     if ci_status == "FAILED" and email_notifications:
-        error_handler.ci_failure_notification(message="Failure in Deployment tests!")
+        error_handler.ci_failure_notification(message="Failure in CI Deployment tests")
     
     for suite_name, suite_dict in suites.items():
         if suite_dict["running"] and suite_name != "launch":
@@ -755,11 +755,11 @@ def launch():
             print("BUILD ONLY -> Skipping deployment tests....")
             print("DONE")
     except Exception as e:
-        error_message = "Error in main routine of CI!"
+        error_message = "Error in main routine of CI"
         print(error_message)
         print(traceback.format_exc())
         if email_notifications:
-            error_handler.ci_failure_notification(message=error_message)
+            error_handler.ci_failure_notification(message=error_message, logs_dict=traceback.format_exc())
 
     finally:
         print("Terminating...")

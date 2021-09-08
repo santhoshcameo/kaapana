@@ -371,12 +371,12 @@
         hour: "2"
         job: curl -o /home/ubuntu/cronjob.log "http://10.128.130.252:8080/cikaapana/develop?email-notifications&launch-name=Kaapana+CI+Nightly&delete-instances&os-usr={{ os_ci_username }}&os-pwd={{ os_ci_password }}&reg-url={{ registry_url }}&reg-usr={{ registry_user }}&reg-pwd={{ registry_token }}"
 
-    - name: Create Cronjob at 5 am to save latest CI service logs
+    - name: Create Cronjob at 6 am to save latest CI service logs
       become: no
       cron:
         name: "Save latest CI server service logs"
         minute: "0"
-        hour: "5"
+        hour: "6"
         job: "journalctl -u ci-server.service -S `date +%F` 2>&1 | tee /home/ubuntu/ci_systemlog_today.log"
     
     - name: install docker
