@@ -458,42 +458,80 @@ def build_and_push_containers():
     print("------------------------ CONTAINER ------------------------")
     print("-----------------------------------------------------------")
     config_list = (kaapana_dir, http_proxy, registry_url)
-    docker_containers_list, logs = containers_build_and_push_all.start_container_build(config=config_list)
+    containers_list, logs = containers_build_and_push_all.start_container_build(config=config_list)
 
     for log in logs:
         if supported_log_levels.index(log['loglevel'].upper()) >= log_level:
             handle_logs(log)
-        if log['loglevel'].upper() == "ERROR":
-            exit(1)
 
     i = 0
-    for docker_container in docker_containers_list:
+    for container in containers_list:
         i += 1
         print()
-        print("Container: {}".format(docker_container.tag.replace(docker_container.container_registry, "")[1:]))
-        print("{}/{}".format(i, len(docker_containers_list)))
+        print("Container: {}".format(container.tag.replace(container.container_registry, "")[1:]))
+        print("{}/{}".format(i, len(containers_list)))
         print()
         try:
-            if docker_container.ci_ignore:
-                print('SKIP {}: CI_IGNORE == True!'.format(docker_container.tag.replace(docker_container.container_registry, "")[1:]))
+            if container.ci_ignore:
+                log = {
+                "suite": containers_build_and_push_all.suite_tag,
+                "test": "{}".format(container.tag.replace(registry_prefix, "")),
+                "step": "CI_IGNORE",
+                "log": "",
+                "loglevel": "WARN",
+                "message": "enabled!",
+                "rel_file": container.path,
+                }
+                yield log
+                print('SKIP {}: CI_IGNORE == True!'.format(container.tag.replace(container.container_registry, "")[1:]))
                 continue
-            for log in docker_container.check_prebuild():
+            for log in container.check_prebuild():
                 yield log
                 if log['loglevel'].upper() == "ERROR":
                     raise SkipException('SKIP {}: check_prebuild() failed!'.format(log['test']), log=log)
-
-            for log in docker_container.build():
+            
+            for log in container.build():
                 yield log
                 if log['loglevel'].upper() == "ERROR":
                     raise SkipException('SKIP {}: build() failed!'.format(log['test']), log=log)
 
-            for log in docker_container.push():
+            for log in container.push():
                 yield log
                 if log['loglevel'].upper() == "ERROR":
                     raise SkipException('SKIP {}: push() failed!'.format(log['test']), log=log)
 
-        except SkipException as error:
+        except (SkipException) as error:
+            log_entry = {
+                "suite": containers_build_and_push_all.suite_tag,
+                "test": "{}".format(container.tag.replace(registry_prefix, "")),
+                "step": "Docker build",
+                "log": "",
+                "loglevel": "ERROR",
+                "timestamp": get_timestamp(),
+                "message": "Build Skipped!",
+                "rel_file": container.path,
+                "container": container,
+                "test_done": True,
+            }
+            yield log
             print("SkipException: {}".format(str(error)))
+            continue
+        
+        except (TimeoutExpired) as error:
+            log_entry = {
+                "suite": containers_build_and_push_all.suite_tag,
+                "test": "{}".format(container.tag.replace(registry_prefix, "")),
+                "step": "Docker build",
+                "log": "",
+                "loglevel": "ERROR",
+                "timestamp": get_timestamp(),
+                "message": "Build failed due to timeout!",
+                "rel_file": container.path,
+                "container": container,
+                "test_done": True,
+            }
+            yield log
+            print("TimeoutExpired: {}".format(str(error)))
             continue
 
 
