@@ -73,6 +73,11 @@ def notify_maintainers(logs_dict):
 
                     We found some issues within: <b> {} </b>.<br>
                     Since you are the last editor, please have a look at it.<br>
+                    To view the CI launches, visit the following link:<br>
+                    http://10.128.130.252/ui/#kaapana/launches/all<br>
+                    and use the following credentials to login:<br>
+                    user: read<br>
+                    password: Read_1234<br>
                     Thanks!<br><br>
                     Yours sincerely,<br>
                     Kaapana-CI <br>
@@ -113,6 +118,11 @@ def ci_failure_notification(message="", logs_dict={}):
 
                 This is to inform you that the Kaapana CI has failed. <b> {} </b>.<br>
                 You are receiving this email since you are a part of the Kaapana team.<br>
+                To view the CI launches, visit the following link:<br>
+                <http://10.128.130.252/ui/#kaapana/launches/all><br>
+                and use the following credentials to login:<br>
+                user: read<br>
+                password: Read_1234<br>
                 Thanks!<br><br>
                 Yours sincerely,<br>
                 Kaapana-CI <br>
