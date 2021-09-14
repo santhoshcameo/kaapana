@@ -475,7 +475,7 @@ def build_and_push_containers():
             if container.ci_ignore:
                 log = {
                 "suite": containers_build_and_push_all.suite_tag,
-                "test": "{}".format(container.tag.replace(registry_prefix, "")),
+                "test": "{}".format(container.tag.replace(container.container_registry, "")[1:]),
                 "step": "CI_IGNORE",
                 "log": "",
                 "loglevel": "WARN",
@@ -503,7 +503,7 @@ def build_and_push_containers():
         except (SkipException) as error:
             log_entry = {
                 "suite": containers_build_and_push_all.suite_tag,
-                "test": "{}".format(container.tag.replace(registry_prefix, "")),
+                "test": "{}".format(container.tag.replace(container.container_registry, "")[1:]),
                 "step": "Docker build",
                 "log": "",
                 "loglevel": "ERROR",
@@ -517,10 +517,10 @@ def build_and_push_containers():
             print("SkipException: {}".format(str(error)))
             continue
         
-        except (TimeoutExpired) as error:
+        except subprocess.TimeoutExpired as error:
             log_entry = {
                 "suite": containers_build_and_push_all.suite_tag,
-                "test": "{}".format(container.tag.replace(registry_prefix, "")),
+                "test": "{}".format(container.tag.replace(container.container_registry, "")[1:]),
                 "step": "Docker build",
                 "log": "",
                 "loglevel": "ERROR",
