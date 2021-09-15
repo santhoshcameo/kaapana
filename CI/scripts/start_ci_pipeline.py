@@ -501,19 +501,6 @@ def build_and_push_containers():
                     raise SkipException('SKIP {}: push() failed!'.format(log['test']), log=log)
 
         except (SkipException) as error:
-            log_entry = {
-                "suite": containers_build_and_push_all.suite_tag,
-                "test": "{}".format(container.tag.replace(container.container_registry, "")[1:]),
-                "step": "Docker build",
-                "log": "",
-                "loglevel": "ERROR",
-                "timestamp": get_timestamp(),
-                "message": "Build Skipped!",
-                "rel_file": container.path,
-                "container": container,
-                "test_done": True,
-            }
-            yield log
             print("SkipException: {}".format(str(error)))
             continue
         
