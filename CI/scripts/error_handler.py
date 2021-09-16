@@ -91,8 +91,13 @@ def notify_maintainers(logs_dict):
 def blame_last_edit(logs_dict):
     error_filepath = os.path.dirname(logs_dict['rel_file'])
     print("Git blame path: {}".format(error_filepath))
+    
     if error_filepath == "" and error_filepath is None and not os.path.isfile(error_filepath) or not os.path.isdir(error_filepath):
         print("error_filepath is not a valid file or dir! -> return")
+        return None
+    ## Following condition only temporary until ci merged into develop
+    if "kaapana_ci" in error_filepath:
+        print("Error in file from CI folder on server: {}".format(error_filepath))
         return None
 
     git_log = g.log("-s", "-n1", "--pretty=format:%an %ae%n", "--", error_filepath)
