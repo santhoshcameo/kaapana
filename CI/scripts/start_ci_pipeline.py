@@ -478,7 +478,7 @@ def build_and_push_containers():
                 "test": "{}".format(container.tag.replace(container.container_registry, "")[1:]),
                 "step": "CI_IGNORE",
                 "log": "",
-                "loglevel": "WARN",
+                "loglevel": "DEBUG",
                 "message": "enabled!",
                 "rel_file": container.path,
                 }
