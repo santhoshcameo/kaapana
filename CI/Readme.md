@@ -68,6 +68,7 @@ To start a new instance of the CI server:
 - [ ] Delete Openstack Instance
   
 ## Logs and Email Reports
+
 - [x] Report logs to the CI dashboard (ReportPortal)
 - [x] Report issues via email to developers
 - [x] Save latest system log to log file
