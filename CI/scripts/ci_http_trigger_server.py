@@ -188,7 +188,7 @@ class S(BaseHTTPRequestHandler):
                                     <H1 ALIGN=CENTER >
                                         <FONT FACE="COMIC SANS, COMIC RELIEF, PAPYRUS, CURSIVE">
                                             <BLINK>
-                                            <MARQUEE BEHAVIOR=ALTERNATE><B>CI kaapana!</B></MARQUEE>
+                                            <MARQUEE BEHAVIOR=ALTERNATE><B>Kaapana CI!</B></MARQUEE>
                                             </BLINK>
                                         </FONT>
                                     </H1>
