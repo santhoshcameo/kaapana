@@ -49,6 +49,8 @@ def send_email(mail_address, message, logs_dict={}):
 
 def notify_maintainers(logs_dict):
     print("notify_maintainers: ")    
+    if "container" in logs_dict:
+        del logs_dict["container"]
     maintainers = blame_last_edit(logs_dict)
 
     if maintainers is None:
