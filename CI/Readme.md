@@ -67,6 +67,11 @@ To start a new instance of the CI server:
 - [x] Basic UI testing (Login, PACS, Flow, etc. available)
 - [ ] Delete Openstack Instance
   
+## Logs and Email Reports
+- [x] Report logs to the CI dashboard (ReportPortal)
+- [x] Report issues via email to developers
+- [x] Save latest system log to log file
+
 ## More testing
 
 - [ ] Send example image
