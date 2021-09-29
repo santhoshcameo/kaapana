@@ -369,7 +369,7 @@
         name: "ci reports"
         minute: "0"
         hour: "2"
-        job: curl -o /home/ubuntu/cronjob.log "http://10.128.130.252:8080/cikaapana/develop?email-notifications&launch-name=Kaapana+CI+Nightly&delete-instances&os-usr={{ os_ci_username }}&os-pwd={{ os_ci_password }}&reg-url={{ registry_url }}&reg-usr={{ registry_user }}&reg-pwd={{ registry_token }}"
+        job: curl -o /home/ubuntu/cronjob.log "http://10.128.130.252:8080/cikaapana/develop?email-notifications&launch-name=Kaapana+CI+Daily&delete-instances&os-usr={{ os_ci_username }}&os-pwd={{ os_ci_password }}&reg-url={{ registry_url }}&reg-usr={{ registry_user }}&reg-pwd={{ registry_token }}"
 
     - name: Create Cronjob at 6 am to save latest CI service logs
       become: no

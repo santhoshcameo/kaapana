@@ -178,7 +178,7 @@ class S(BaseHTTPRequestHandler):
                     self.wfile.write("""
                     <html>
                     <head>
-                        <title>CI kaapana</title>
+                        <title>Kaapana CI</title>
                     </head>
                     <body>
                         <TABLE ALIGN=CENTER WIDTH=60%>
@@ -210,7 +210,7 @@ class S(BaseHTTPRequestHandler):
                                             <br />
                                             <div><strong>where para could be:</strong></div>
                                             <br />
-                                            <div>&nbsp; &nbsp; delete-instances&nbsp; &nbsp; &nbsp; &nbsp; -&gt; start from scratch and delete OS ci instances first</div>
+                                            <div>&nbsp; &nbsp; delete-instances&nbsp; &nbsp; &nbsp; &nbsp; -&gt; delete OpenStack ci deployment instances first if available</div>
                                             <div>&nbsp; &nbsp; os-usr&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; OpenStack CI user "os-usr=&ltos-ci-user&gt"</div>
                                             <div>&nbsp; &nbsp; os-pwd&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; OpenStack CI password "os-pwd=&ltos-ci-password/token&gt"</div>
                                             <div>&nbsp; &nbsp; reg-url&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -&gt; container registry url "reg-url=&lturl_link&gt"</div>
