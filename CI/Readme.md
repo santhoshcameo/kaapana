@@ -71,7 +71,6 @@ To start a new instance of the CI server:
 
 - [x] Report logs to the CI dashboard (ReportPortal)
 - [x] Report issues via email to developers
-- [x] Save latest system log to log file
 
 ## More testing
 

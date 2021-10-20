@@ -60,7 +60,7 @@ os_project_name = "E230-Kaapana-CI"
 os_project_id = "2df9e30325c849dbadcc07d7ffd4b0d6"
 start_parameters = ""
 
-volume_size = "90"
+volume_size = "100"
 instance_flavor = "dkfz-8.16"
 ssh_key = "kaapana"
 registry_user = None
@@ -357,7 +357,7 @@ def build_and_push_charts():
     # for log_entry in HelmChart.quick_check(push_charts_to_docker):
     for log_entry in charts_build_and_push_all.HelmChart.quick_check():
         if isinstance(log_entry, dict):
-            print_log_entry(log_entry, kind="CHARTS")
+            handle_logs(log_entry)
         else:
             all_charts = log_entry
 
@@ -393,7 +393,7 @@ def build_and_push_charts():
         print("#########################################################################")
         print("")
         for chart in not_ready_list:
-            print(f"Missing dependencies for chat: {chart.name}")
+            print(f"Missing dependencies for chart: {chart.name}")
             print("")
         print("")
         exit(1)
@@ -448,6 +448,7 @@ def build_and_push_charts():
             print()
         except SkipException as error:
             print("SkipException: {}".format(str(error)))
+            continue
 
 
 def build_and_push_containers():
@@ -784,7 +785,7 @@ def launch():
         print(error_message)
         print(traceback.format_exc())
         if email_notifications:
-            error_handler.ci_failure_notification(message=error_message, logs_dict=traceback.format_exc())
+            error_handler.ci_failure_notification(message=error_message)
 
     finally:
         print("Terminating...")
@@ -824,7 +825,7 @@ if __name__ == '__main__':
 
     parser = ArgumentParser()
     parser.add_argument("-in", "--inst-name", dest="instance_name", default="ci-nightly-depl-test", help="Name for the CI deployment instance")
-    parser.add_argument("-ln", "--launch-name", dest="launch_name", default="CI Nightly Run", help="Name for the lauch on ReportPortal")
+    parser.add_argument("-ln", "--launch-name", dest="launch_name", default="CI Test Run", help="Name for the lauch on ReportPortal")
     parser.add_argument("-b", "--branch", dest="branch", default=None, help="Branch to run the CI on. !!CAUTION: will reset the git repo to last commit!")
     parser.add_argument("-dsm", "--disable-safe-mode", dest="disable_safe_mode", default=False, action='store_true',help="Disable safe-mode")
     parser.add_argument("-u", "--username", dest="username", default="kaapana-ci", help="Openstack Username")
