@@ -16,15 +16,41 @@
   remote_user: "{{ remote_username }}"
 
   tasks:
-    - name: Download install_platform.sh file
-      get_url: 
-        url: https://raw.githubusercontent.com/kaapana/kaapana/develop/platforms/kaapana-platform/platform-installation/install_platform.sh
-        dest: "{{ lookup('env','HOME') }}/kaapana/platforms/kaapana-platform/platform-installation/install_platform.sh"
-      delegate_to: 127.0.0.1
-      when: not {{ local_script }}
+
+    - name: Set server installation script path
+      set_fact: 
+        script_path: "{{ lookup('env','HOME') }}/kaapana/platforms/kaapana-platform/platform-installation"
+    
+    - name: Boolean which describes if script is locally available or not
+      set_fact:
+        is_script_local: "{{ local_script }}"
+
+    - name: Download install_platform.sh file if not locally available
+      block:
+
+      - name: Check directory locally
+        stat:
+          path: "{{ script_path }}"
+        register: script_folder
+        delegate_to: 127.0.0.1
+
+      - name: Create directory if it doesn't exist
+        file:
+          path: "{{ script_path }}"
+          state: directory
+        when: script_folder.stat.exists == false
+        delegate_to: 127.0.0.1
+
+      - name: Download install_platform.sh file
+        get_url: 
+          url: https://raw.githubusercontent.com/kaapana/kaapana/develop/platforms/kaapana-platform/platform-installation/install_platform.sh
+          dest: "{{ script_path }}/install_platform.sh"
+        delegate_to: 127.0.0.1
+      
+      when: not is_script_local
 
     - set_fact:
-        install_script: "{{ lookup('env','HOME') }}/kaapana/platforms/kaapana-platform/platform-installation/install_platform.sh"
+        install_script: "{{ script_path }}/install_platform.sh"
 
     - name: Add container registry URL to install script
       replace:
