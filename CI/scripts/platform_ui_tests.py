@@ -15,7 +15,7 @@ def start(platform_urls, suite_name="UI Tests", test_name="Platform Browser UI T
     init_password = "kaapana"
     password = "admin"
 
-    time.sleep(300)
+    time.sleep(600)
     for platform_url in platform_urls:
         suite_name = platform_url
         entry = {
@@ -183,18 +183,18 @@ def start(platform_urls, suite_name="UI Tests", test_name="Platform Browser UI T
                         yield entry
                     time.sleep(3)
 
-            if count >= 5:
-                print("ERROR while testing: : {}".format(url["title"]))
-                entry = {
-                    "suite": suite_name,
-                    "test": test_name,
-                    "step": "Testing endpoint",
-                    "log": "",
-                    "loglevel": "ERROR",
-                    "message": "Failed! Got: '{}' expected: '{}'".format(driver.title, url["title"]),
-                    "rel_file": url["url"],
-                }
-                yield entry
+                if count >= 5:
+                    print("ERROR while testing: : {}".format(url["title"]))
+                    entry = {
+                        "suite": suite_name,
+                        "test": test_name,
+                        "step": "Testing endpoint",
+                        "log": "",
+                        "loglevel": "ERROR",
+                        "message": "Failed! Got: '{}' expected: '{}'".format(driver.title, url["title"]),
+                        "rel_file": url["url"],
+                    }
+                    yield entry
 
         driver.close()
         driver.quit()

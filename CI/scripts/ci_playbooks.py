@@ -34,21 +34,22 @@ def start_os_instance(username, password, project_name, project_id, instance_nam
     return instance_ip_address, logs
 
 
-def start_install_server_dependencies(target_hosts, remote_username, suite_name="Setup Test Server"):
+def start_install_server_dependencies(target_hosts, remote_username, local_script=False, suite_name="Setup Test Server"):
     playbook_path = os.path.join(kaapana_home, "CI/ansible_playbooks/01_install_server_dependencies.yaml")
     if not os.path.isfile(playbook_path):
         print("playbook yaml not found.")
         exit(1)
 
     extra_vars = {
-        "remote_username": remote_username
+        "remote_username": remote_username,
+        "local_script" : local_script
     }
 
     return_value, logs = ci_playbook_execute.execute(playbook_path, testsuite=suite_name, testname="Install Server Dependencies", hosts=target_hosts, extra_vars=extra_vars)
     return return_value, logs
 
 
-def deploy_platform(target_hosts, remote_username, registry_user, registry_pwd, registry_url, platform_name="Kaapana", suite_name="Test Platform"):
+def deploy_platform(target_hosts, remote_username, registry_user, registry_pwd, registry_url, local_script=False, platform_name="Kaapana", suite_name="Test Platform"):
     playbook_path = os.path.join(
         kaapana_home, "CI/ansible_playbooks/02_deploy_platform.yaml")
     if not os.path.isfile(playbook_path):
@@ -59,7 +60,8 @@ def deploy_platform(target_hosts, remote_username, registry_user, registry_pwd, 
         "remote_username": remote_username,
         "registry_user": registry_user,
         "registry_pwd": registry_pwd,
-        "registry_url" : registry_url
+        "registry_url" : registry_url,
+        "local_script" : local_script
     }
 
     return_value, logs = ci_playbook_execute.execute(playbook_path, testsuite=suite_name, testname="{0: <14}: Deploy platform".format(platform_name), hosts=target_hosts, extra_vars=extra_vars)

@@ -23,11 +23,12 @@
         name: "vm-{{ inventory_hostname.split('.')[2] }}-{{ inventory_hostname.split('.')[3] }}.cloud.dkfz-heidelberg.de"
       when: inventory_hostname.split('.')[0] == "10"
 
-    # - name: Download server_installation.sh file locally
-    #   get_url: 
-    #     url: https://raw.githubusercontent.com/kaapana/kaapana/develop/server-installation/server_installation.sh
-    #     dest: "{{ lookup('env','HOME') }}/server_installation.sh" 
-    #   delegate_to: 127.0.0.1
+    - name: Download server_installation.sh file locally
+      get_url: 
+        url: https://raw.githubusercontent.com/kaapana/kaapana/develop/server-installation/server_installation.sh
+        dest: "{{ lookup('env','HOME') }}/kaapana/server-installation/server_installation.sh" 
+      delegate_to: 127.0.0.1
+      when: not {{ local_script }}
 
     - set_fact:
         server_script: "{{ lookup('env','HOME') }}/kaapana/server-installation/server_installation.sh"
@@ -41,4 +42,4 @@
     - name: Reboot machine...
       become: yes
       reboot:
-          reboot_timeout: 120
+          reboot_timeout: 200

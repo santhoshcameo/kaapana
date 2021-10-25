@@ -16,11 +16,12 @@
   remote_user: "{{ remote_username }}"
 
   tasks:
-    # - name: Download install_platform.sh file
-    #   get_url: 
-    #     url: https://raw.githubusercontent.com/kaapana/kaapana/develop/platforms/kaapana-platform/platform-installation/install_platform.sh
-    #     dest: "{{ lookup('env','HOME') }}/install_platform.sh"
-    #   delegate_to: 127.0.0.1
+    - name: Download install_platform.sh file
+      get_url: 
+        url: https://raw.githubusercontent.com/kaapana/kaapana/develop/platforms/kaapana-platform/platform-installation/install_platform.sh
+        dest: "{{ lookup('env','HOME') }}/kaapana/platforms/kaapana-platform/platform-installation/install_platform.sh"
+      delegate_to: 127.0.0.1
+      when: not {{ local_script }}
 
     - set_fact:
         install_script: "{{ lookup('env','HOME') }}/kaapana/platforms/kaapana-platform/platform-installation/install_platform.sh"

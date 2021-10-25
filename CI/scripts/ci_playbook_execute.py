@@ -184,6 +184,10 @@ class ResultCallback(CallbackBase):
             loglevel = "WARN"
             global_return_value[host_name] = "SKIPPED"
             print("{0: <15} - SKIPPED: {1}".format(host_name, task))
+        elif return_code == 0:
+            loglevel = "INFO"
+            global_return_value[host_name] = "OK"
+            print("{0: <15} - OK: {1}".format(host_name, task))
         else:
             loglevel = "ERROR"
             global_return_value[host_name] = "FAILED"

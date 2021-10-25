@@ -13,7 +13,7 @@ import ci_playbooks
 
 # defaults
 os_image = "ubuntu"
-volume_size = "90"
+volume_size = "100"
 instance_flavor = "dkfz-8.16"
 ssh_key = "kaapana"
 os_project_name = "E230-Kaapana-CI"
@@ -49,13 +49,13 @@ def start_os_instance():
 
 
 def install_server_dependencies(target_hosts):
-    return_value, logs = ci_playbooks.start_install_server_dependencies(target_hosts=target_hosts, remote_username=os_image, suite_name="Get new instance")
+    return_value, logs = ci_playbooks.start_install_server_dependencies(target_hosts=target_hosts, remote_username=os_image, local_script=False, suite_name="Get new instance")
     handle_logs(logs)
     return return_value
 
 
 def deploy_platform(target_hosts):
-    return_value, logs = ci_playbooks.deploy_platform(target_hosts=target_hosts, remote_username=os_image, registry_user=registry_user, registry_pwd=registry_pwd, registry_url=registry_url, platform_name="Kaapana platform")
+    return_value, logs = ci_playbooks.deploy_platform(target_hosts=target_hosts, remote_username=os_image, registry_user=registry_user, registry_pwd=registry_pwd, registry_url=registry_url, local_script=False, platform_name="Kaapana platform")
     handle_logs(logs)
 
     return return_value
