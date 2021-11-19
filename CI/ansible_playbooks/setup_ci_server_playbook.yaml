@@ -347,36 +347,36 @@
         value: "{{ registry_token }}"
         env: yes
     
-    - name: Create cronjob at 0 docker prune
+    - name: Create cronjob at 2:30 am docker prune
       become: no
       cron:
         name: "Docker prune"
-        minute: "0"
-        hour: "0"
+        minute: "30"
+        hour: "02"
         job: "echo Start cleaning Docker images: $(date) | tee {{ ansible_env.HOME }}/docker_prune.log && docker system prune -f -a --volumes 2>&1 | tee -a {{ ansible_env.HOME }}/docker_prune.log"
 
     - name: Delete lock file
       become: no
       cron:
         name: "Delete ci_running.txt"
-        minute: "45"
-        hour: "0"
+        minute: "30"
+        hour: "3"
         job: "rm -f ~/ci_running.txt"
 
-    - name: Create cronjob at 2 am to start ci reports
+    - name: Create cronjob at 5 am to start ci reports
       become: no
       cron:
         name: "ci reports"
         minute: "0"
-        hour: "2"
+        hour: "5"
         job: curl -o /home/ubuntu/cronjob.log "http://10.128.130.252:8080/cikaapana/develop?email-notifications&launch-name=Kaapana+CI+Daily&delete-instances&os-usr={{ os_ci_username }}&os-pwd={{ os_ci_password }}&reg-url={{ registry_url }}&reg-usr={{ registry_user }}&reg-pwd={{ registry_token }}"
 
-    - name: Create Cronjob at 6 am to save latest CI service logs
+    - name: Create Cronjob at 9 am to save latest CI service logs
       become: no
       cron:
         name: "Save latest CI server service logs"
         minute: "0"
-        hour: "6"
+        hour: "9"
         job: "journalctl -u ci-server.service -S `date +%F` 2>&1 | tee /home/ubuntu/ci_systemlog_today.log"
     
     - name: install docker
