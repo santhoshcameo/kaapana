@@ -235,7 +235,7 @@ def handle_logs(log_dict):
     if test_dict is not None and test in ci_exceptions["test_exceptions"]:
         test_dict["status"] = "SKIPPED"
         test_dict["issue_type"] = "AB001"
-
+    
     if step is not None:
         try:
             message = "**{}:** {}\n{}".format(step, reason, rel_file)
@@ -543,7 +543,7 @@ def start_os_instance(instance_name, os_image, suite_name):
 def install_dependencies(target_hosts, os_image, suite_name="Install Server Dependencies"):
     print("target_hosts: {}".format(target_hosts))
     print("suite_name: {}".format(suite_name))
-    return_value, logs = ci_playbooks.start_install_server_dependencies(target_hosts=target_hosts, remote_username=os_image, local_only=True, suite_name=suite_name)
+    return_value, logs = ci_playbooks.start_install_server_dependencies(target_hosts=target_hosts, remote_username=os_image, local_script=True, suite_name=suite_name)
     for log in logs:
         handle_logs(log)
 
@@ -551,7 +551,7 @@ def install_dependencies(target_hosts, os_image, suite_name="Install Server Depe
 
 
 def deploy_platform(target_hosts, platform_name, os_image, suite_name="Deploy Platform"):
-    return_value, logs = ci_playbooks.deploy_platform(target_hosts=target_hosts, remote_username=os_image, registry_user=registry_user, registry_pwd=registry_pwd, registry_url=registry_url, local_only=True, platform_name=platform_name)
+    return_value, logs = ci_playbooks.deploy_platform(target_hosts=target_hosts, remote_username=os_image, registry_user=registry_user, registry_pwd=registry_pwd, registry_url=registry_url, local_script=True, platform_name=platform_name)
     for log in logs:
         handle_logs(log)
 
