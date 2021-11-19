@@ -15,7 +15,7 @@ def start(platform_urls, suite_name="UI Tests", test_name="Platform Browser UI T
     init_password = "kaapana"
     password = "admin"
 
-    time.sleep(600)
+    time.sleep(800)
     for platform_url in platform_urls:
         suite_name = platform_url
         entry = {
