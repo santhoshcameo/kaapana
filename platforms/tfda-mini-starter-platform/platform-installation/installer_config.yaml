@@ -1,5 +1,5 @@
-project_name: kaapana-platform-chart
-default_version: 0.1.2
+project_name: starter-platform-chart
+default_version: 0.1.1
 offline_mode: 'false'
 dev_mode: 'true'
 container_registry_url:

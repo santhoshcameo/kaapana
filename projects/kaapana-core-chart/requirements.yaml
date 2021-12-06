@@ -9,12 +9,12 @@ dependencies:
   - name: meta
     version: "0.1.1"
     repository: file://deps/meta
-  - name: monitoring
-    version: "0.1.1"
-    repository: file://deps/monitoring
-  - name: store
-    version: "0.1.1"
-    repository: file://deps/store
+  # - name: monitoring
+  #   version: "0.1.1"
+  #   repository: file://deps/monitoring
+  # - name: store
+  #   version: "0.1.1"
+  #   repository: file://deps/store
   - name: error-pages-chart
     version: "0.1.1"
     repository: file://../../services/kaapana-core/error-pages/error-pages-chart
