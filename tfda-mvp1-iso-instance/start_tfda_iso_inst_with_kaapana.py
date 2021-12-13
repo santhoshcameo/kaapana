@@ -4,6 +4,10 @@ import getpass
 from argparse import ArgumentParser
 import traceback
 import json
+from subprocess import PIPE, run
+import time
+
+os.environ["HELM_EXPERIMENTAL_OCI"] = "1"
 
 kaapana_int_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 scripts_dir = os.path.join(kaapana_int_dir, "CI", "scripts")
@@ -38,7 +42,6 @@ def handle_logs(logs):
         elif debug_mode:
             print(json.dumps(log, indent=4, sort_keys=True))
 
-def extract_request_details():
 
 def start_os_instance():
     return_value, logs = ci_playbooks.start_os_instance(username=username,
@@ -68,7 +71,7 @@ def deploy_platform(target_hosts):
 
 def run_algo_on_data(target_hosts, user_request_file):
     bucket_chart_details_dict = _extract_user_request(file_path=user_request_file)
-    compressed_chart_details_dict = _pull_chart_and_compress(chart_details=bucket_chart_details_dict['chart_details'])
+    compressed_chart_details_dict = _pull_chart_and_compress(registry_user=registry_user, registry_pwd=registry_pwd, chart_details=bucket_chart_details_dict['chart_details'])
     return_value, logs = ci_playbooks.copy_data_algo(target_hosts=target_hosts, bucket_name = bucket_chart_details_dict['bucket_name'], chart_path=compressed_chart_details_dict['compressed_chart_path'], chart_filename=compressed_chart_details_dict['compressed_chart_name'])
     return_value, logs = ci_playbooks.run_algo_and_send_result(target_hosts=target_hosts, chart_filename=compressed_chart_details_dict['compressed_chart_name']) if return_value != "FAILED" else "FAILED"
 
@@ -90,17 +93,18 @@ def _pull_chart_and_compress(registry_user, registry_pwd, chart_details=""):
     command = ["helm", "registry", "login", "-u", "{}".format(registry_user), "-p", "{}".format(registry_pwd), "{}".format(registry_url)]
     output = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, timeout=5)
     
-    for i in range(6):
+    loop = 6
+    for i in range(loop):
         print("Pulling chart...")
         command2 = ["helm", "chart", "pull", "{}/{}:{}".format(registry_url, chart_name, chart_version)]
         output2 = run(command2, stdout=PIPE, stderr=PIPE, universal_newlines=True, timeout=5)
-        if output2.returncode != 0 and i<5:
+        if output2.returncode != 0 and i<(loop-1):
             print("Failed to pull chart, will try again")
             time.sleep(2)
         elif output2.returncode == 0:
             print("Chart successfully pulled!")
             break
-        elif i == 5:
+        elif i == (loop-1):
             print("Chart could not be pulled, exiting...")       
             exit(1)
     
@@ -112,7 +116,7 @@ def _pull_chart_and_compress(registry_user, registry_pwd, chart_details=""):
     if output4.returncode != 0:
         print("Could not create compressed chart file, exiting...")
         exit(1)
-    else
+    else:
         print("Compressed chart successfully!")
         return {"compressed_chart_path":"{}".format(os.path.dirname(os.path.abspath(__file__))), "compressed_chart_name":"{}-{}.tgz".format(chart_name, chart_version)}
 
