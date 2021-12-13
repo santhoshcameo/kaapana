@@ -20,3 +20,4 @@ __pycache__
 history
 build-scripts/build-configuration.yaml
 play.sh
+tfda-mvp1-iso-instance/data/Breast-Cancer-Screening-DBT/sample.dcm
