@@ -199,8 +199,8 @@ def launch():
     instance_ip_address = start_os_instance()
     result = install_server_dependencies(target_hosts=[instance_ip_address]) if instance_ip_address != "FAILED" else "FAILED"
     result = deploy_platform(target_hosts=[instance_ip_address]) if result != "FAILED" else "FAILED"
-    result = run_algo_on_data(target_hosts=[instance_ip_address], user_request_file = user_request_file) if result != "FAILED" else "FAILED"
     result = print_success(instance_ip_address) if result != "FAILED" else "FAILED"
+    result = run_algo_on_data(target_hosts=[instance_ip_address], user_request_file = user_request_file) if result != "FAILED" else "FAILED"
     result = delete_os_instance() if delete_instance else "SKIPPED"
 
 
