@@ -10,7 +10,7 @@
     username: "{{ os_username }}"
     password: "{{ os_password }}"
     instance_name: "{{ os_instance_name | default('kaapana_ci_depl_test_server') }}"
-    volume_size: "{{ os_volume_size | default('90') }}"
+    volume_size: "{{ os_volume_size | default('100') }}"
     os: "{{ os_image | default('ubuntu') }}"
     instance_flavor: "{{ os_instance_flavor | default('dkfz-8.16') }}"
 
@@ -59,7 +59,7 @@
 
     - name: Set CentOs8 as image
       set_fact:
-        instance_image: CentOS-8.3-DKFZ
+        instance_image: CentOS-8.4-DKFZ
       when: os |lower == "centos8"
 
     - name: Set Ubuntu as image
